@@ -16,7 +16,7 @@ const TaskPopup: React.FunctionComponent<{
   const taskPopupRoot = document.getElementById("task-popup") as any;
 
   const content = (<PopupMenu onClose={onClose} style={{ minHeight: "80%"}} staticMode={staticMode}>
-    <div style={{ float: "right" }}>
+    <div style={{ float: "right", display: staticMode ? "none" : undefined }}>
       {assignedTask.isDone ? (
         <Button
           color="var(--danger-color)"

@@ -141,7 +141,7 @@ const EditFaqPopup = ({onComplete, onClose, faq = {}}: any) => {
 
   return(
     <PopupMenu onClose={onClose}>
-      <Typography size={24} weight="600"  styles={{ marginBottom: "24px" }}>{faq ? "Editing" : "Creating new"} faq</Typography>
+      <Typography size={24} weight="600"  styles={{ marginBottom: "24px" }}>{faq ? "Editing" : "Creating new"} FAQ</Typography>
 
       <Typography size={16} weight="600" styles={{ marginBottom: "8px" }}>Question</Typography>
       <Input ref={labelRef} defaultValue={faq?.question} style={{ marginBottom: "16px" }} />

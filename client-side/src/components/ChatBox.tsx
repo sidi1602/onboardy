@@ -238,10 +238,6 @@ const ChatBox: React.FunctionComponent<{assignedTask: AssignedTask, onMessageSen
     const newMessages = [...messages, newMessage] 
     setMessages(newMessages as any);
 
-    if (user.type === "student" && user.student) {
-      addLatestMessage({ id: crypto.randomUUID(), message: newMessage, student: user.student, assignedTask, isNew: true })
-    }
-
     setAttachments([]);
     setNewMessageText('');
   }
