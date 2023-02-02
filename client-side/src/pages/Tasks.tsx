@@ -77,7 +77,6 @@ const Tasks: React.FunctionComponent = () => {
   const removeTask = useTasksStore((state) => state.removeTask);
   const editTask = useTasksStore((state) => state.editTask);
 
-
   useEffect(() => {
     getTasks();
   }, [])
@@ -125,7 +124,7 @@ const Tasks: React.FunctionComponent = () => {
         </Button>
         <ul>
           {tasks
-            .filter((task) => task.title.toLowerCase().includes(searchQuery))
+            .filter((task) => task.title?.toLowerCase().includes(searchQuery))
             .map((task) => (
               <li
                 key={task.id}
@@ -293,6 +292,7 @@ const TasksPreview: React.FunctionComponent<{ selectedTask: Task | null, onSave:
         >
           {task.tags.length ? task.tags.map((tag) => (
             <Tag
+              key={tag.id}
               label={tag.label}
               removable={isEditing}
               onRemove={() => handleTagRemove(tag)}

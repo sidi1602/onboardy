@@ -15,7 +15,7 @@ const TaskCard: React.FunctionComponent<TaskCardProps> = ({
 }) => {
   return (
     <Card className="task" onClick={onClick} style={{ cursor: "pointer", maxWidth: "100%", filter: assignedTask.isDone ? "grayscale(1)" : undefined }}>
-      {assignedTask.task.isUrgent &&  <Typography color="var(--danger-color)" size={14} weight="600" styles={{ float: "right"}}>Urgent Task!</Typography>}
+      {assignedTask.task?.isUrgent &&  <Typography color="var(--danger-color)" size={14} weight="600" styles={{ float: "right"}}>Urgent Task!</Typography>}
       <Typography
         size={18}
         weight="600"

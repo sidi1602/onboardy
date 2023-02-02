@@ -74,7 +74,7 @@ const StudentPopup: React.FunctionComponent<StudentPopup> = ({ student, onStuden
       <Typography size={16} weight="600" styles={{ marginBottom: "8px" }}>Student Tags</Typography>
       {isEditing && <SearchTags excludedTags={studentDetails.tags} onSelect={handleTagsAdd}/>}
       <div style={{ display: "flex", gap: "10px", background: "#f0f0f0", padding: "15px", borderRadius: "10px", flexWrap: "wrap", minHeight: "68px", marginBottom: "16px" }}>
-        {studentDetails.tags.map((tag) => (
+        {studentDetails.tags?.map((tag) => (
           <Tag key={tag.id} label={tag.label} removable={isEditing} onRemove={() => handleTagRemove(tag)} />
         ))}
       </div>

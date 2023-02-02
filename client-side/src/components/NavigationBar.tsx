@@ -9,9 +9,9 @@ import StudentIcon from './../assets/student.icon'
 import TagIcon from '../assets/tag.icon'
 import BlogIcon from '../assets/blog.icon'
 import { useStudentsStore, useUserStore } from '../stores'
-import { getResourceFromLocalStorage } from '../APIs/localStorageHelpers'
 import { generateStockImage } from '../helpers'
 import MessageIcon from '../assets/message.icon'
+import OnboardyLogo from './../assets/OnBoardy.png'
 
 const StyledNavBar = styled.div`
   background: white;
@@ -87,8 +87,8 @@ const staffNavLinks = [
 
 const staffMember = {
   id: "123",
-  firstName: "John",
-  lastName: "Smith",
+  firstName: "EPITA",
+  lastName: "Admin",
   email: "alexa.bob@epita.fr",
   type: "staff"
 }
@@ -109,7 +109,7 @@ const NavigationBar = () => {
 
   useEffect(() => {
     console.log(user)
-    if (user?.student) return
+    // if (user) return
     setUser({...students[1], student: students[1],type: "student"})
   }, [students]);
 
@@ -130,7 +130,7 @@ const NavigationBar = () => {
     <StyledNavBar>
       <div>
         <div className='onboardy-logo'>
-          <Typography size={32} weight={"600"}>OnBoardy</Typography>
+          <Typography size={32} weight={"600"}><img src={OnboardyLogo} alt="onboardy-logo" /></Typography>
         </div>
         <ul className='nav-links'>
           {navLinks.map((nav: any, idx: number) => (

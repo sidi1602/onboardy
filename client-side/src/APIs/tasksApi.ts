@@ -4,28 +4,40 @@ import { getResourceFromLocalStorage, setResourceAtLocalStorage } from "./localS
 import { fetchStudents, updateStudent } from "./studentsApi";
 
 const fetchTasks = async (): Promise<Task[]> => {
-  return getResourceFromLocalStorage<Task[]>("tasks");
+  const tasksRes = await fetch('http://localhost:4000/api/tasks') as any;
+  return await tasksRes.json();
 }
 
 const createTask = async (task: Task)  => {
-  const tasks = getResourceFromLocalStorage<Task[]>("tasks");
-  setResourceAtLocalStorage<Task[]>("tasks", [task, ...tasks]);
+  await fetch('http://localhost:4000/api/tasks', {
+    method: "POST",
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(task),
+  })
   matchTaskToStudents(task);
 }
 
-const deleteTask = async (taskId: string) => {
-  const tasks = getResourceFromLocalStorage<Task[]>("tasks") as Task[];
-  setResourceAtLocalStorage<Task[]>("tasks", [...tasks.filter((task) => task.id !== taskId)]);
-  removeTaskFromStudents(taskId);
+const deleteTask = async (_id: string) => {
+  await fetch(`http://localhost:4000/api/tasks/${_id}`, {
+    method: "DELETE",
+    headers: {
+      'Content-Type': 'application/json',
+    }
+  })
+  // removeTaskFromStudents(taskId);
 }
 
 const updateTask = async (updatedTask: Task) => {
-  const tasks = getResourceFromLocalStorage<Task[]>("tasks");
-  const targetIndex = tasks.findIndex(task => task.id === updatedTask.id);
-  const updatedTasks = tasks.slice();
-  updatedTasks[targetIndex] = updatedTask;
-  setResourceAtLocalStorage<Task[]>("tasks", updatedTasks);
-  matchTaskToStudents(updatedTask);
+  await fetch(`http://localhost:4000/api/tasks/${updatedTask._id}`, {
+    method: "PUT",
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(updatedTask),
+  })
+  // matchTaskToStudents(updatedTask);
 }
 
 
