@@ -6,7 +6,7 @@ import TaskPopup from '../components/TaskPopup';
 import Typography from '../components/Typography';
 import { calculateAssignedTasksProgress, findAndReplaceInArrayByID } from '../helpers';
 import AssignedTask from '../models/AssignedTask';
-import { useStudentsStore, useUserStore } from '../stores';
+import { useAssignedTasksStore, useStudentsStore, useUserStore } from '../stores';
 
 const StyledAssignedTasks = styled.div`
 
@@ -17,36 +17,26 @@ const StyledAssignedTasks = styled.div`
 `
 
 const AssignedTasks: React.FunctionComponent = () => {
-  const [selectedTask, setSelectedTask] = useState<AssignedTask | null>(null);
   const user = useUserStore((state) => state.user);
-  const editStudent = useStudentsStore((state) => state.editStudent);
+  const assignedTasks = useAssignedTasksStore((state) => state.assignedTasks);
+  const getAssignedTasks = useAssignedTasksStore((state) => state.getAssignedTasks);
 
-  const selectedStudent = user?.student;
-  if (!selectedStudent || !selectedStudent.assignedTasks) return <></>
+  useEffect(() => {
+    getAssignedTasks(user?.id || "")
+  }, [user])
 
-
-  const handleAssignedTaskUpdate = (update: any) => {
-    if (!selectedTask || !selectedStudent) return;
-    const updatedAssignedTask = {...selectedTask, ...update };
-    const updatedAssignedTasks = findAndReplaceInArrayByID(selectedStudent.assignedTasks || [], selectedTask.id, updatedAssignedTask)
-    const updatedStudent = {...selectedStudent, assignedTasks: updatedAssignedTasks}
-    console.log(selectedStudent, update, updatedStudent)
-    setSelectedTask(updatedAssignedTask);
-    editStudent(updatedStudent);
-  }
-
-  const unDoneTasks = selectedStudent?.assignedTasks?.filter(aTask => !aTask.isDone) || [];
-  const doneTasks = selectedStudent?.assignedTasks?.filter(aTask => aTask.isDone) || [];
+  const unDoneTasks = assignedTasks?.filter(aTask => !aTask.isDone) || [];
+  const doneTasks = assignedTasks?.filter(aTask => aTask.isDone) || [];
 
   return (
     <StyledAssignedTasks className='tasks'>
-      <ProgressBar label="Tasks Completion Progress" value={calculateAssignedTasksProgress(selectedStudent?.assignedTasks || [])} />
+      <ProgressBar label="Tasks Completion Progress" value={calculateAssignedTasksProgress(assignedTasks || [])} />
       <div style={{ display: "flex", gap: "24px"}}>
         <div style={{ marginBottom: "32px", width: "calc(50% - 12px)"}}>
           <Typography size={18} weight="600" styles={{ marginBottom: "16px"}}>Due tasks: {unDoneTasks.length}</Typography>
-          <div style={{ display: "flex", gap: "32px", flexDirection: "column"}}>
+          <div style={{ display: "flex", gap: "24px", flexDirection: "column"}}>
             {unDoneTasks.map((aTask) => (
-              <TaskCard assignedTask={aTask} key={aTask.id} onClick={() => setSelectedTask(aTask)} />
+              <TaskCard assignedTask={aTask} key={aTask.id} />
             ))}
           </div>
         </div>
@@ -54,12 +44,11 @@ const AssignedTasks: React.FunctionComponent = () => {
           <Typography size={18} weight="600" styles={{ marginBottom: "16px"}}>Done tasks: {doneTasks.length}</Typography>
           <div style={{ display: "flex", gap: "24px", flexDirection: "column"}}>
           {doneTasks.map((aTask) => (
-              <TaskCard assignedTask={aTask} key={aTask.id} onClick={() => setSelectedTask(aTask)} />
+              <TaskCard assignedTask={aTask} key={aTask.id} />
             ))}
           </div>
         </div>
       </div>
-      {selectedTask && <TaskPopup assignedTask={selectedTask} onClose={() => setSelectedTask(null)} onAssignedTaskChange={handleAssignedTaskUpdate} />}
     </StyledAssignedTasks>
   )
 }

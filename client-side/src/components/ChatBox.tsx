@@ -185,19 +185,45 @@ const StyledChatBox = styled.div`
     }
 `
 
+const defMessages = [
+  {
+    id: crypto.randomUUID(),
+    author: {
+      id: "8125676e-8c04-4501-8ef7-6d58f4eee329",
+      firstName: "Anais",
+      lastName: "Boehm"
+    },
+    image: "https://via.placeholder.com/50/cccccc/000000?text=JS",
+    text: "Hello I have few question regarding this task?",
+    createdAt: '2023-01-23T09:34:11.007Z',
+    attachments: [] as Attachment[]
+  }, 
+  {
+    id: crypto.randomUUID(),
+    author: {
+      id: "1234",
+      firstName: "EPITA",
+      lastName: "Admin"
+    },
+    image: "https://via.placeholder.com/50/cccccc/000000?text=BM",
+    text: "Hello there, how can I help you?",
+    createdAt: '2023-01-23T10:24:15.007Z',
+    attachments: [] as Attachment[]
+  },
+]
+
 const ChatBox: React.FunctionComponent<{assignedTask: AssignedTask, onMessageSend: (messages: any) => void }> = ({ assignedTask, onMessageSend }) => {
   const user = useUserStore((state) => state.user);
   const addLatestMessage = useLatestMessagesStore((state) => state.addLatestMessage)
 
   const [newMessageText, setNewMessageText] = useState('');
-  const [messages, setMessages] = useState(assignedTask.messages);
+  const [messages, setMessages] = useState(defMessages);
   const [attachments, setAttachments] = useState<Attachment[]>([]);
-  const isOwnMessage = (authorId: string) => authorId === user?.id;
-  
-
-  useEffect(() => {
-    setMessages(assignedTask.messages);
-  }, [assignedTask.messages])
+  const isOwnMessage = (authorId: string) => { 
+    console.log(user?.type, authorId)
+    if (user?.type === "staff" && authorId === "1234") return true
+    return authorId === user?.id
+  };
 
   const handleSend = (e: React.FormEvent) => {
     if (!user) return;
@@ -210,9 +236,7 @@ const ChatBox: React.FunctionComponent<{assignedTask: AssignedTask, onMessageSen
       attachments
     }
     const newMessages = [...messages, newMessage] 
-    setMessages(newMessages);
-
-    onMessageSend({ messages: newMessages});
+    setMessages(newMessages as any);
 
     if (user.type === "student" && user.student) {
       addLatestMessage({ id: crypto.randomUUID(), message: newMessage, student: user.student, assignedTask, isNew: true })

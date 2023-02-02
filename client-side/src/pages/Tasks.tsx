@@ -189,7 +189,7 @@ const TasksPreview: React.FunctionComponent<{ selectedTask: Task | null, onSave:
     const isConfirmed = confirm(`Are you sure you want to remove the following task: \n\n "${task.title}"`);
     if(!isConfirmed) return
 
-    onRemove(task.id);
+    onRemove(task._id || "");
   }
 
   return (

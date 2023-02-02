@@ -142,8 +142,7 @@ const studentSchema = new mongoose.Schema({
     id: String,
     label: String,
     description: String
-  }]
-  ,
+  }],
   assignedTasks: [TaskSchema],
 });
 
@@ -153,6 +152,8 @@ const assignedTaskSchema = new mongoose.Schema({
   task: { type: mongoose.Schema.Types.ObjectId, ref: "Task" },
   studentId: { type: String, required: true },
   messages: [{ type: mongoose.Schema.Types.ObjectId, ref: "Message" }],
+  taskId: { type: String, required: true },
+  isDone: { type: Boolean, required: true },
 });
 
 const FAQSchema = new mongoose.Schema({

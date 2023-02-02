@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import AssignedTask from '../models/AssignedTask'
 import Student from '../models/Student'
 import ITag from '../models/Tag'
-import { useStudentsStore } from '../stores'
+import { useAssignedTasksStore, useStudentsStore } from '../stores'
 import Button from './Button'
 import Input from './Input'
 import PopupMenu from './PopupMenu'
@@ -21,10 +21,17 @@ interface StudentPopup {
 const StudentPopup: React.FunctionComponent<StudentPopup> = ({ student, onStudentDelete, onClose, onAssignedTaskSelect }) => {
   const editStudent = useStudentsStore((state) => state.editStudent);
   const [isEditing, setEditing] = useState(false);
-  const [studentDetails, setStudentDetails] = useState(student)
+  const [studentDetails, setStudentDetails] = useState(student);
+  const assignedTasks = useAssignedTasksStore((state) => state.assignedTasks);
+  const getAssignedTasks = useAssignedTasksStore((state) => state.getAssignedTasks);
+  
+  const loadAssignedTasks = () => {
+    getAssignedTasks(student.id)
+  }
   
   useEffect(() => {
     setStudentDetails(student)
+    loadAssignedTasks()
   }, [student])
 
   const handleTagsAdd = (tag: ITag) => {
@@ -46,10 +53,11 @@ const StudentPopup: React.FunctionComponent<StudentPopup> = ({ student, onStuden
   const handleStudentChange = () => {
     editStudent(studentDetails);
     setEditing(false);
+    setStudentDetails(student)
   }
 
-  const unDoneTasks = studentDetails?.assignedTasks?.filter(aTask => !aTask.isDone) || [];
-  const doneTasks = studentDetails?.assignedTasks?.filter(aTask => aTask.isDone) || [];
+  const unDoneTasks = assignedTasks?.filter(aTask => !aTask.isDone) || [];
+  const doneTasks = assignedTasks?.filter(aTask => aTask.isDone) || [];
 
   return (
     <PopupMenu onClose={onClose}>
@@ -86,7 +94,7 @@ const StudentPopup: React.FunctionComponent<StudentPopup> = ({ student, onStuden
             <Typography size={16} weight="600" styles={{ marginBottom: "16px"}}>Due tasks: {unDoneTasks.length}</Typography>
             <div style={{ marginBottom: "16px", display: "flex", gap: "24px", flexWrap: "wrap"}}>
               {unDoneTasks.map((aTask) => (
-                <TaskCard assignedTask={aTask} key={aTask.id} onClick={() => onAssignedTaskSelect(aTask)} />
+                <TaskCard assignedTask={aTask} key={aTask.id}  />
               ))}
             </div>
           </div>
@@ -94,7 +102,7 @@ const StudentPopup: React.FunctionComponent<StudentPopup> = ({ student, onStuden
             <Typography size={16} weight="600" styles={{ marginBottom: "16px"}}>Done tasks: {doneTasks.length}</Typography>
             <div style={{ display: "flex", gap: "24px", flexWrap: "wrap" }}>
             {doneTasks.map((aTask) => (
-                <TaskCard assignedTask={aTask} key={aTask.id} onClick={() => onAssignedTaskSelect(aTask)} />
+                <TaskCard assignedTask={aTask} key={aTask.id} />
               ))}
             </div>
           </div>

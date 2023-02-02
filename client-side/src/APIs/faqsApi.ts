@@ -1,4 +1,3 @@
-import { getResourceFromLocalStorage, setResourceAtLocalStorage } from "./localStorageHelpers";
 import FAQ from "../models/FAQ"
 
 const fetchFAQs = async (): Promise<FAQ[]> => {
@@ -14,8 +13,6 @@ const createFAQ = async (faq: FAQ) => {
     },
     body: JSON.stringify(faq),
   })
-  // const faqs = getResourceFromLocalStorage<FAQ[]>("faqs");
-  // setResourceAtLocalStorage<FAQ[]>("faqs", [faq, ...faqs])
 }
 
 const deleteFAQ = async (_id: string) => {
@@ -25,12 +22,9 @@ const deleteFAQ = async (_id: string) => {
       'Content-Type': 'application/json',
     }
   })
-  // const faqs = getResourceFromLocalStorage<FAQ[]>("faqs");
-  // setResourceAtLocalStorage<FAQ[]>("faqs", [...faqs.filter((faq) => faq.id !== id)])
 }
 
 const updateFAQ = async (updatedFAQ: FAQ) => {
-  console.log(updatedFAQ)
   await fetch(`http://localhost:4000/api/faqs/${updatedFAQ._id}`, {
     method: "PUT",
     headers: {
@@ -38,11 +32,6 @@ const updateFAQ = async (updatedFAQ: FAQ) => {
     },
     body: JSON.stringify(updatedFAQ),
   })
-  // const faqs = getResourceFromLocalStorage<FAQ[]>("faqs");
-  // const targetIndex = faqs.findIndex(faq => faq.id === updatedFAQ.id);
-  // const updatedFAQs = faqs.slice()
-  // updatedFAQs[targetIndex] = updatedFAQ;
-  // setResourceAtLocalStorage<FAQ[]>("faqs", updatedFAQs)
 }
 
 export { fetchFAQs, createFAQ, deleteFAQ, updateFAQ }

@@ -1,6 +1,6 @@
 import AssignedTask from "../models/AssignedTask";
 import Task from "../models/Task"
-import { getResourceFromLocalStorage, setResourceAtLocalStorage } from "./localStorageHelpers";
+import { createAssignedTask, deleteAssignedTask, fetchAssignedTasks, fetchAssignedTasksByStudentId } from "./assignedTasksApi";
 import { fetchStudents, updateStudent } from "./studentsApi";
 
 const fetchTasks = async (): Promise<Task[]> => {
@@ -9,14 +9,16 @@ const fetchTasks = async (): Promise<Task[]> => {
 }
 
 const createTask = async (task: Task)  => {
-  await fetch('http://localhost:4000/api/tasks', {
+  const createTaskRes = await fetch('http://localhost:4000/api/tasks', {
     method: "POST",
     headers: {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(task),
   })
-  matchTaskToStudents(task);
+  const newTask = await createTaskRes.json()
+  const newTaskID = newTask._id
+  matchTaskToStudents(task, newTaskID);
 }
 
 const deleteTask = async (_id: string) => {
@@ -26,7 +28,7 @@ const deleteTask = async (_id: string) => {
       'Content-Type': 'application/json',
     }
   })
-  // removeTaskFromStudents(taskId);
+  removeTaskFromStudents(_id);
 }
 
 const updateTask = async (updatedTask: Task) => {
@@ -41,32 +43,31 @@ const updateTask = async (updatedTask: Task) => {
 }
 
 
-const matchTaskToStudents = async (task: Task) => {
+const matchTaskToStudents = async (task: Task, newTaskId: string ) => {
   const students = await fetchStudents();
   const matchedStudents = students.filter(student => task.tags.every(tag => student.tags.some( t => t.id === tag.id)));
-  
+
   matchedStudents.forEach(student => {
     const newAssignedTask: AssignedTask = {
       id: crypto.randomUUID(),
       refId: crypto.randomUUID(),
-      task,
+      taskId: newTaskId || "",
       studentId: student.id,
       isDone: false,
       messages: []
     }
 
-    student.assignedTasks = [...student.assignedTasks || [], newAssignedTask];
-    updateStudent(student);
+    createAssignedTask(newAssignedTask);
   })
 }
 
 const removeTaskFromStudents = async (taskId: string) => {
-  const students = await fetchStudents();
-  const matchedStudents = students.filter(student => student.assignedTasks?.some(aTask => aTask.task.id === taskId));
+  const assignedTask = await fetchAssignedTasks();
+  const matchedAssignedTask = assignedTask.filter((aTask: AssignedTask) => aTask.taskId === taskId)
+  
 
-  matchedStudents.forEach(async student => {
-    student.assignedTasks = [...(student.assignedTasks || []).filter(aTask => aTask.task.id !== taskId )]
-    updateStudent(student);
+  matchedAssignedTask.forEach(async (aTask: AssignedTask) => {
+    deleteAssignedTask(aTask._id || "");
   })
 }
 

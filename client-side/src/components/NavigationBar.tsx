@@ -93,12 +93,26 @@ const staffMember = {
   type: "staff"
 }
 
+const student = {
+  "_id": "63dbc8e8c6ef6d8dafd1dc09",
+  "id": "8125676e-8c04-4501-8ef7-6d58f4eee329",
+  "firstName": "Anais",
+  "lastName": "Boehm",
+  "email": "Everette.Mann11@example.com",
+  "dob": "2000-05-04",
+  "gender": "M",
+  "nationality": "Ireland",
+  "tags": [],
+  "assignedTasks": [],
+  "__v": 0,
+  "tasksCompletion": 0
+}
+
 const NavigationBar = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [navLinks, setNavLinks] = useState<any>([]);
   const getStudents = useStudentsStore((state) => state.getStudents);
-  const students = useStudentsStore((state) => state.students);
 
   useEffect(() => {
     getStudents()
@@ -108,10 +122,8 @@ const NavigationBar = () => {
   const setUser = useUserStore((state) => state.setUser);
 
   useEffect(() => {
-    console.log(user)
-    // if (user) return
-    setUser({...students[1], student: students[1],type: "student"})
-  }, [students]);
+    setUser({...student, student,type: "student"})
+  }, []);
 
   useEffect(() => {
     setNavLinks(user?.type === "staff" ? staffNavLinks : studentNavLinks || [])
@@ -120,8 +132,9 @@ const NavigationBar = () => {
   const handleProfileSwitch = () => {
     if (user?.type === "student") {
       setUser(staffMember)
+      navigate("/latest");
     } else {
-      setUser({...students[1], type: "student"});
+      setUser({...student, type: "student"});
       navigate("/introduction");
     }
   }
