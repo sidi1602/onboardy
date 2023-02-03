@@ -25,7 +25,6 @@ const StyledStudentCard = styled(Card)`
     margin-top: 15px;
   }
 
-
 `
 
 interface StudentCardProps {

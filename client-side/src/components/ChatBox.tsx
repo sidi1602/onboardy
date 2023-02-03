@@ -220,7 +220,6 @@ const ChatBox: React.FunctionComponent<{assignedTask: AssignedTask, onMessageSen
   const [messages, setMessages] = useState(defMessages);
   const [attachments, setAttachments] = useState<Attachment[]>([]);
   const isOwnMessage = (authorId: string) => { 
-    console.log(user?.type, authorId)
     if (user?.type === "staff" && authorId === "1234") return true
     return authorId === user?.id
   };
